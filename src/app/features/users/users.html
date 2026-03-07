@@ -1,85 +1,67 @@
 <div class="container mt-5">
 
-<div class="row">
+  <div class="d-flex justify-content-between mb-3">
+    <h4>Usuarios registrados</h4>
+    <button class="btn btn-primary" (click)="addNew()">Agregar nuevo</button>
+  </div>
 
-<!-- FORMULARIO -->
-<div class="col-md-4">
+  <!-- Formulario para agregar nuevo usuario -->
+  <div *ngIf="showForm" class="card mb-4">
+    <div class="card-header">
+      <h5>Agregar Nuevo Usuario</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="saveNewUser()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="firstName" [(ngModel)]="newUser.firstName" name="firstName" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName" class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="lastName" [(ngModel)]="newUser.lastName" name="lastName" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="age" class="form-label">Edad</label>
+            <input type="number" class="form-control" id="age" [(ngModel)]="newUser.age" name="age" required min="1">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success me-2">Guardar</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelAdd()">Cancelar</button>
+      </form>
+    </div>
+  </div>
 
-<h4 class="mb-3">Registrar Usuario</h4>
+  <table class="table table-striped" *ngIf="users.length > 0">
+    <thead class="table-dark">
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Email</th>
+        <th>Edad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>{{u.firstName}}</td>
+        <td>{{u.lastName}}</td>
+        <td>{{u.email}}</td>
+        <td>{{u.age}}</td>
+        <td>
+          <button class="btn btn-warning btn-sm me-2" (click)="editUser(u)">Editar</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteUser(u.id!)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-<div class="card p-3 shadow-sm">
-
-<input class="form-control mb-2"
-placeholder="Nombre"
-[(ngModel)]="user.firstName">
-
-<input class="form-control mb-2"
-placeholder="Apellido"
-[(ngModel)]="user.lastName">
-
-<input type="number"
-class="form-control mb-2"
-placeholder="Edad"
-[(ngModel)]="user.age">
-
-<input class="form-control mb-3"
-placeholder="Email"
-[(ngModel)]="user.email">
-
-<button
-class="btn btn-success w-100"
-(click)="saveUser()">
-Guardar
-</button>
-
-</div>
-
-</div>
-
-<!-- TABLA -->
-<div class="col-md-8">
-
-<h4 class="mb-3">Usuarios registrados</h4>
-
-<table class="table table-striped">
-
-<thead class="table-dark">
-<tr>
-<th>Nombre</th>
-<th>Apellido</th>
-<th>Email</th>
-<th>Edad</th>
-<th></th>
-</tr>
-</thead>
-
-<tbody>
-
-<tr *ngFor="let u of users">
-
-<td>{{u.firstName}}</td>
-<td>{{u.lastName}}</td>
-<td>{{u.email}}</td>
-<td>{{u.age}}</td>
-
-<td>
-
-<button
-class="btn btn-danger btn-sm"
-(click)="deleteUser(u.id!)">
-Eliminar
-</button>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
+  <p *ngIf="users.length === 0">No hay usuarios registrados.</p>
 
 </div>
