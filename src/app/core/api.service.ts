@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User, Country, City } from '../models/user';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { finalize, shareReplay, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,11 @@ export class ApiService {
 
   private API = "https://aeropuerto-los-primos-backend.onrender.com/api/users";
   private CATALOG = "https://aeropuerto-los-primos-backend.onrender.com/api";
+
+  private countriesCache: Country[] | null = null;
+  private countriesRequest$: Observable<Country[]> | null = null;
+  private citiesCache = new Map<number, City[]>();
+  private citiesRequests = new Map<number, Observable<City[]>>();
 
   constructor(private http: HttpClient) {}
 
@@ -32,11 +38,48 @@ export class ApiService {
 
   /* catalogos */
   getCountries(): Observable<Country[]> {
-    return this.http.get<Country[]>(`${this.CATALOG}/countries`);
+    if (this.countriesCache) {
+      return of(this.countriesCache);
+    }
+
+    if (!this.countriesRequest$) {
+      this.countriesRequest$ = this.http.get<Country[]>(`${this.CATALOG}/countries`).pipe(
+        tap(data => {
+          this.countriesCache = data;
+        }),
+        finalize(() => {
+          this.countriesRequest$ = null;
+        }),
+        shareReplay(1)
+      );
+    }
+
+    return this.countriesRequest$;
   }
 
   getCities(countryId: number): Observable<City[]> {
-    return this.http.get<City[]>(`${this.CATALOG}/cities`, { params: { countryId: countryId.toString() } });
+    const cachedCities = this.citiesCache.get(countryId);
+    if (cachedCities) {
+      return of(cachedCities);
+    }
+
+    const inFlightRequest = this.citiesRequests.get(countryId);
+    if (inFlightRequest) {
+      return inFlightRequest;
+    }
+
+    const request$ = this.http.get<City[]>(`${this.CATALOG}/cities`, { params: { countryId: countryId.toString() } }).pipe(
+      tap(data => {
+        this.citiesCache.set(countryId, data);
+      }),
+      finalize(() => {
+        this.citiesRequests.delete(countryId);
+      }),
+      shareReplay(1)
+    );
+
+    this.citiesRequests.set(countryId, request$);
+    return request$;
   }
 
 }
