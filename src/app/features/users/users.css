@@ -1,20 +1,126 @@
-.form-container{
-    display:flex;
-    flex-direction:column;
-    width:300px;
-    gap:10px;
+.users-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
-button{
-    margin-top:10px;
+.users-shell {
+    max-width: 1280px;
 }
 
-table{
-    margin-top:20px;
-    border-collapse:collapse;
+.users-header h4 {
+    font-weight: 700;
 }
 
-td,th{
-    border:1px solid #ccc;
-    padding:8px;
+.users-subtitle {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.users-card {
+    border: 0;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.users-card .card-header {
+    background: linear-gradient(135deg, #0f172a, #1d4ed8);
+    color: #fff;
+    padding: 1rem 1.25rem;
+}
+
+.users-card .card-body {
+    padding: 1.25rem;
+}
+
+.users-table-wrapper {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+}
+
+.users-table {
+    margin-bottom: 0;
+}
+
+.users-empty {
+    color: #6c757d;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .users-page {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .users-header {
+        align-items: flex-start;
+    }
+
+    .users-header .btn {
+        width: 100%;
+    }
+
+    .users-card .card-body {
+        padding: 1rem;
+    }
+
+    .users-table thead {
+        display: none;
+    }
+
+    .users-table,
+    .users-table tbody,
+    .users-table tr,
+    .users-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .users-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.9rem;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .users-table td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        border: 0;
+        border-bottom: 1px solid #eef2f7;
+        padding: 0.85rem 1rem;
+        text-align: right;
+    }
+
+    .users-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #334155;
+        text-align: left;
+        flex: 0 0 42%;
+    }
+
+    .users-table td:last-child {
+        border-bottom: 0;
+    }
+
+    .users-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .users-actions .btn {
+        width: 100%;
+        margin-right: 0 !important;
+    }
+
+    .users-actions .btn + .btn {
+        margin-top: 0.5rem;
+    }
 }

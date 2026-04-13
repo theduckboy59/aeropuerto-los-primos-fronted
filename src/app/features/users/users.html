@@ -1,95 +1,99 @@
-<div class="container mt-5">
-
-  <div class="d-flex justify-content-between mb-3">
-    <h4>Usuarios registrados</h4>
-    <button class="btn btn-primary" (click)="addNew()">Agregar nuevo</button>
-  </div>
-
-  <!-- Formulario para agregar nuevo usuario -->
-  <div *ngIf="showForm" class="card mb-4">
-    <div class="card-header">
-      <h5>{{ editMode ? 'Editar Usuario' : 'Agregar Nuevo Usuario' }}</h5>
+<div class="users-page py-4">
+  <div class="users-shell mx-auto">
+    <div class="users-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+      <div>
+        <h4 class="mb-1">Usuarios registrados</h4>
+        <p class="users-subtitle mb-0">Administra pasajeros desde una experiencia adaptable a escritorio y móvil.</p>
+      </div>
+      <button class="btn btn-primary" (click)="addNew()">Agregar nuevo</button>
     </div>
-    <div class="card-body">
-      <form (ngSubmit)="saveNewUser()">
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="firstName" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="firstName" [(ngModel)]="newUser.firstName" name="firstName" required>
+
+    <div *ngIf="showForm" class="card users-card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">{{ editMode ? 'Editar Usuario' : 'Agregar Nuevo Usuario' }}</h5>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="saveNewUser()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="firstName" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="firstName" [(ngModel)]="newUser.firstName" name="firstName" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="lastName" [(ngModel)]="newUser.lastName" name="lastName" required>
+            </div>
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="lastName" class="form-label">Apellido</label>
-            <input type="text" class="form-control" id="lastName" [(ngModel)]="newUser.lastName" name="lastName" required>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="age" class="form-label">Edad</label>
+              <input type="number" class="form-control" id="age" [(ngModel)]="newUser.age" name="age" required min="1">
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email" required>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="cui" class="form-label">CUI</label>
+              <input type="text" class="form-control" id="cui" [(ngModel)]="newUser.cui" name="cui" pattern="\d{13}" required maxlength="13" placeholder="13 dígitos">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="country" class="form-label">País</label>
+              <select class="form-select" id="country" [(ngModel)]="newUser.country" name="country" (change)="countryChanged()" required>
+                <option [ngValue]="undefined" disabled>Seleccione un país</option>
+                <option *ngFor="let c of countries" [ngValue]="c">{{c.name}}</option>
+              </select>
+            </div>
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="age" class="form-label">Edad</label>
-            <input type="number" class="form-control" id="age" [(ngModel)]="newUser.age" name="age" required min="1">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="city" class="form-label">Ciudad</label>
+              <select class="form-select" id="city" [(ngModel)]="newUser.city" name="city" [disabled]="!cities.length" required>
+                <option [ngValue]="undefined" disabled>Seleccione una ciudad</option>
+                <option *ngFor="let ci of cities" [ngValue]="ci">{{ci.name}}</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="cui" class="form-label">CUI</label>
-            <input type="text" class="form-control" id="cui" [(ngModel)]="newUser.cui" name="cui" pattern="\d{13}" required maxlength="13" placeholder="13 dígitos">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="country" class="form-label">País</label>
-            <select class="form-select" id="country" [(ngModel)]="newUser.country" name="country" (change)="countryChanged()" required>
-              <option [ngValue]="undefined" disabled selected>Seleccione un país</option>
-              <option *ngFor="let c of countries" [ngValue]="c">{{c.name}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="city" class="form-label">Ciudad</label>
-            <select class="form-select" id="city" [(ngModel)]="newUser.city" name="city" [disabled]="!cities.length" required>
-              <option [ngValue]="undefined" disabled selected>Seleccione una ciudad</option>
-              <option *ngFor="let ci of cities" [ngValue]="ci">{{ci.name}}</option>
-            </select>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-success me-2">Guardar</button>
-        <button type="button" class="btn btn-secondary" (click)="cancelAdd()">Cancelar</button>
-      </form>
+          <button type="submit" class="btn btn-success me-2">Guardar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelAdd()">Cancelar</button>
+        </form>
+      </div>
     </div>
+
+    <div class="table-responsive users-table-wrapper" *ngIf="users.length > 0">
+      <table class="table table-striped align-middle users-table mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Edad</th>
+            <th>CUI</th>
+            <th>País</th>
+            <th>Ciudad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of users">
+            <td data-label="Nombre">{{u.firstName}}</td>
+            <td data-label="Apellido">{{u.lastName}}</td>
+            <td data-label="Email">{{u.email}}</td>
+            <td data-label="Edad">{{u.age}}</td>
+            <td data-label="CUI">{{u.cui}}</td>
+            <td data-label="País">{{u.country?.name}}</td>
+            <td data-label="Ciudad">{{u.city?.name}}</td>
+            <td data-label="Acciones" class="users-actions">
+              <button class="btn btn-warning btn-sm me-2" (click)="editUser(u)">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteUser(u.id!)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p *ngIf="users.length === 0" class="users-empty">No hay usuarios registrados.</p>
   </div>
-
-  <table class="table table-striped" *ngIf="users.length > 0">
-    <thead class="table-dark">
-      <tr>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Email</th>
-        <th>Edad</th>
-        <th>CUI</th>
-        <th>País</th>
-        <th>Ciudad</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let u of users">
-        <td>{{u.firstName}}</td>
-        <td>{{u.lastName}}</td>
-        <td>{{u.email}}</td>
-        <td>{{u.age}}</td>
-        <td>{{u.cui}}</td>
-        <td>{{u.country?.name}}</td>
-        <td>{{u.city?.name}}</td>
-        <td>
-          <button class="btn btn-warning btn-sm me-2" (click)="editUser(u)">Editar</button>
-          <button class="btn btn-danger btn-sm" (click)="deleteUser(u.id!)">Eliminar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p *ngIf="users.length === 0">No hay usuarios registrados.</p>
-
 </div>
