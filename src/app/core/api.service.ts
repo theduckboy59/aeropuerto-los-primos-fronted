@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-  private API = "http://localhost:8080/api/users";
-  private CATALOG = "http://localhost:8080/api";
+  private API = "https://aeropuerto-los-primos-backend.onrender.com/api/users";
+  private CATALOG = "https://aeropuerto-los-primos-backend.onrender.com/api";
 
   constructor(private http: HttpClient) {}
 
