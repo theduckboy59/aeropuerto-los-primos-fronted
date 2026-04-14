@@ -1,20 +1,8 @@
-.form-container{
-    display:flex;
-    flex-direction:column;
-    width:300px;
-    gap:10px;
+.table td,
+.table th {
+    vertical-align: middle;
 }
 
-button{
-    margin-top:10px;
-}
-
-table{
-    margin-top:20px;
-    border-collapse:collapse;
-}
-
-td,th{
-    border:1px solid #ccc;
-    padding:8px;
+.badge {
+    font-weight: 600;
 }
