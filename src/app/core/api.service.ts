@@ -9,8 +9,8 @@ import { finalize, shareReplay, tap } from 'rxjs/operators';
 })
 export class ApiService {
 
-  private API = "https://aeropuerto-los-primos-backend.onrender.com/api/users";
-  private CATALOG = "https://aeropuerto-los-primos-backend.onrender.com/api";
+  private API = "http://localhost:8080/api/users";
+  private CATALOG = "http://localhost:8080/api";
 
   private countriesCache: Country[] | null = null;
   private countriesRequest$: Observable<Country[]> | null = null;
