@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user';
 import { Observable } from 'rxjs';
 
+export interface LoginRequest {
+  usernameOrEmail: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,6 +24,10 @@ export class ApiService {
 
   createUser(user: User): Observable<User> {
     return this.http.post<User>(this.API, user);
+  }
+
+  login(payload: LoginRequest): Observable<any> {
+    return this.http.post<any>(`${this.API}/login`, payload);
   }
 
   updateUser(id: number, user: User): Observable<User> {
