@@ -1,3 +1,13 @@
+.crud-topbar {
+    align-items: center;
+    background: #f4f9ff;
+    border: 1px solid #d8e8ff;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+}
+
 .table td,
 .table th {
     vertical-align: middle;
