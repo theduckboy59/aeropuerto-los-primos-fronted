@@ -1,9 +1,20 @@
+export interface Country {
+  id: number;
+  name?: string;
+}
+
+export interface City {
+  id: number;
+  name?: string;
+}
+
 export interface User {
   id?: number;
-  username: string;
+  firstName: string;
+  lastName: string;
+  age: number;
   email: string;
-  password?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  active: boolean;
+  cui: string;  // 13-digit unique identifier
+  country?: Country;
+  city?: City;
 }
