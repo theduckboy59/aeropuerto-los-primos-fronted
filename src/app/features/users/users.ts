@@ -1,120 +1,96 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../core/api.service';
-import { User, Country, City } from '../../models/user';
-// router is no longer required
+import { User } from '../../models/user';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './users.html',
   styleUrls: ['./users.css']
 })
 export class Users implements OnInit {
 
   users: User[] = [];
-  showForm: boolean = false;
-  editMode: boolean = false;           // indicates whether we're editing
-  newUser: User = { firstName: '', lastName: '', age: 0, email: '', cui: '' };
+  showForm = false;
+  editMode = false;
+  editingUserId: number | null = null;
+  newUser: User = { username: '', email: '', password: '', active: true };
 
-  countries: Country[] = [];
-  cities: City[] = [];
-
-  constructor(
-    private api: ApiService, 
-    private cd: ChangeDetectorRef
-  ){}
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    this.loadUsers(); // carga automática al iniciar
-  }
-
-  private loadCountries(): void {
-    this.api.getCountries().subscribe({
-      next: data => this.countries = data,
-      error: err => console.error('Error cargando países', err)
-    });
-  }
-
-  private loadCities(countryId: number): void {
-    this.api.getCities(countryId).subscribe({
-      next: data => this.cities = data,
-      error: err => console.error('Error cargando ciudades', err)
-    });
+    this.loadUsers();
   }
 
   loadUsers(): void {
     this.api.getUsers().subscribe({
       next: data => {
-        this.users = data; // asigna datos
-        console.log('Usuarios cargados:', this.users); // depuración: verificar si cui viene del backend
-        this.cd.detectChanges(); // fuerza actualización de la tabla
+        this.users = data;
       },
       error: err => console.error('Error cargando usuarios', err)
     });
   }
-
 
   deleteUser(id: number): void {
     this.api.deleteUser(id).subscribe(() => this.loadUsers());
   }
 
   editUser(u: User): void {
-    // populate form for editing
     this.editMode = true;
-    this.newUser = { ...u, cui: u.cui || '' }; // asegurar que cui sea string vacío si no existe
+    this.editingUserId = u.id ?? null;
+    this.newUser = {
+      username: u.username,
+      email: u.email,
+      password: '',
+      active: u.active
+    };
     this.showForm = true;
-    this.loadCountries();
-    if (u.country && u.country.id) {
-      this.loadCities(u.country.id);
-    }
   }
-
 
   addNew(): void {
     this.editMode = false;
+    this.editingUserId = null;
     this.resetNewUser();
     this.showForm = true;
-    this.loadCountries();
-    this.cities = [];
   }
 
   saveNewUser(): void {
-    // Validaciones locales antes de enviar
-    if (!this.newUser.firstName.trim()) {
-      alert('El nombre es obligatorio.');
-      return;
-    }
-    if (!this.newUser.lastName.trim()) {
-      alert('El apellido es obligatorio.');
+    if (!this.newUser.username.trim()) {
+      alert('El username es obligatorio.');
       return;
     }
     if (!this.newUser.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.newUser.email)) {
       alert('Ingrese un email válido.');
       return;
     }
-    if (this.newUser.age <= 0) {
-      alert('La edad debe ser mayor a 0.');
+
+    const password = this.newUser.password?.trim() ?? '';
+    if (!this.editMode && password.length < 8) {
+      alert('La contraseña debe tener al menos 8 caracteres.');
       return;
     }
-    if (!/^\d{13}$/.test(this.newUser.cui)) {
-      alert('El CUI debe tener exactamente 13 dígitos.');
-      return;
-    }
-    if (!this.newUser.country || !this.newUser.country.id) {
-      alert('Seleccione un país.');
-      return;
-    }
-    if (!this.newUser.city || !this.newUser.city.id) {
-      alert('Seleccione una ciudad.');
+    if (this.editMode && password.length > 0 && password.length < 8) {
+      alert('Si desea actualizar contraseña, debe tener al menos 8 caracteres.');
       return;
     }
 
-    const call = this.editMode
-      ? this.api.updateUser(this.newUser)
-      : this.api.createUser(this.newUser);
+    const payload: User = {
+      username: this.newUser.username.trim(),
+      email: this.newUser.email.trim(),
+      active: this.newUser.active
+    };
+
+    if (password.length > 0) {
+      payload.password = password;
+    }
+
+    const call = this.editMode && this.editingUserId !== null
+      ? this.api.updateUser(this.editingUserId, payload)
+      : this.api.createUser(payload);
 
     call.subscribe({
       next: () => {
@@ -122,37 +98,24 @@ export class Users implements OnInit {
         this.showForm = false;
         this.resetNewUser();
         this.editMode = false;
+        this.editingUserId = null;
       },
       error: err => {
         console.error(this.editMode ? 'Error actualizando usuario' : 'Error creando usuario', err);
-        // Mostrar mensaje de error del backend si está disponible
         const errorMsg = err.error?.message || 'Error al guardar el usuario. Verifique los datos.';
         alert(errorMsg);
       }
     });
   }
 
-
-
   cancelAdd(): void {
     this.showForm = false;
     this.resetNewUser();
     this.editMode = false;
-  }
-
-  countryChanged(): void {
-    if (this.newUser.country && this.newUser.country.id) {
-      this.loadCities(this.newUser.country.id);
-      // clear previously selected city
-      this.newUser.city = undefined;
-    } else {
-      this.cities = [];
-      this.newUser.city = undefined;
-    }
+    this.editingUserId = null;
   }
 
   private resetNewUser(): void {
-    this.newUser = { firstName: '', lastName: '', age: 0, email: '', cui: '' };
-    this.cities = [];
+    this.newUser = { username: '', email: '', password: '', active: true };
   }
 }

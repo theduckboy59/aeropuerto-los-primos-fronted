@@ -1,7 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ApiService } from './core/api.service';
-//import { Menu } from './layout/menu/menu';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +8,6 @@ import { ApiService } from './core/api.service';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit {
+export class App {
   protected readonly title = signal('aeropuerto');
-
-  constructor(private api: ApiService) {}
-
-  ngOnInit(): void {
-    this.api.getCountries().subscribe({
-      error: err => console.error('Error precargando paises', err)
-    });
-  }
 }

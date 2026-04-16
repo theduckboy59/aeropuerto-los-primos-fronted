@@ -1,0 +1,67 @@
+<section class="login-page">
+  <div class="sky-overlay"></div>
+
+  <div class="login-shell container py-5">
+    <div class="brand-panel">
+      <div class="airport-code">AEP</div>
+      <h1>Aeropuerto Los Primos</h1>
+      <p>
+        Control de acceso para el panel operativo de usuarios.
+      </p>
+    </div>
+
+    <div class="login-card">
+      <h2>Iniciar sesion</h2>
+      <p class="subtitle">Ingresa tus credenciales para continuar.</p>
+
+      <form #loginNgForm="ngForm" (ngSubmit)="login()">
+        <label for="usernameOrEmail" class="form-label">Username o Email</label>
+        <input
+          id="usernameOrEmail"
+          name="usernameOrEmail"
+          class="form-control mb-3"
+          [(ngModel)]="loginForm.usernameOrEmail"
+          required
+        >
+
+        <label for="password" class="form-label">Password</label>
+        <input
+          id="password"
+          name="password"
+          class="form-control"
+          [type]="showLoginPassword ? 'text' : 'password'"
+          [(ngModel)]="loginForm.password"
+          required
+        >
+
+        <div class="form-check mt-2 mb-3">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="showLoginPassword"
+            name="showLoginPassword"
+            [(ngModel)]="showLoginPassword"
+          >
+          <label class="form-check-label" for="showLoginPassword">Ver contrasena</label>
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit">Ingresar</button>
+      </form>
+
+      <div *ngIf="loginStatusMessage"
+           class="alert mt-3 mb-0"
+           [class.alert-success]="loginStatusType === 'success'"
+           [class.alert-danger]="loginStatusType === 'error'">
+        {{ loginStatusMessage }}
+      </div>
+
+      <div class="shortcut mt-3">
+        <a routerLink="/users">Ir al CRUD sin loguearse</a>
+      </div>
+
+      <div class="shortcut mt-2">
+        <a routerLink="/">Regresar al portal</a>
+      </div>
+    </div>
+  </div>
+</section>
