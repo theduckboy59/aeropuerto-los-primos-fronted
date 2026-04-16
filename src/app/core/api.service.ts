@@ -15,6 +15,7 @@ export interface LoginRequest {
 export class ApiService {
 
   private API = environment.usersApiUrl;
+  private BASE_URL = this.API.replace(/\/api\/users$/, '');
 
   constructor(private http: HttpClient) {}
 
@@ -41,5 +42,14 @@ export class ApiService {
 
   deleteUser(id: number) {
     return this.http.delete(`${this.API}/${id}`);
+  }
+
+  /* health & diagnostics */
+  healthCheck(): Observable<any> {
+    return this.http.get<any>(`${this.BASE_URL}/api/status`);
+  }
+
+  getDiagnostic(): Observable<any> {
+    return this.http.get<any>(this.BASE_URL);
   }
 }
