@@ -1,0 +1,124 @@
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050;
+  width: 100%;
+  max-width: 500px;
+  pointer-events: auto;
+}
+
+.alert {
+  margin-bottom: 10px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease-in-out;
+  padding: 12px 16px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(520px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.btn-close {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  opacity: 0.7;
+  font-size: 1.25rem;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+.btn-outline-secondary {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 1rem;
+  padding: 2px 8px;
+}
+
+.btn-outline-secondary:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.alert-details {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  padding: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.details-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+}
+
+.detail-item {
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item strong {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.detail-item code,
+.detail-item pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 6px 8px;
+  border-radius: 3px;
+  border-left: 3px solid rgba(0, 0, 0, 0.2);
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  overflow-x: auto;
+}
+
+.detail-item pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+}
+
+@media (max-width: 768px) {
+  .notification-container {
+    width: calc(100% - 20px);
+    max-width: none;
+    left: 10px;
+    right: 10px;
+  }
+
+  .alert {
+    position: relative;
+  }
+
+  .alert-details {
+    max-height: 300px;
+  }
+}

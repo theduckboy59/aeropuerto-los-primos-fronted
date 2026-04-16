@@ -1,0 +1,63 @@
+<div class="notification-container">
+  <div *ngFor="let notif of notifications" [ngClass]="getAlertClass(notif.type)" role="alert">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="flex-grow-1">
+        <strong>{{ notif.message }}</strong>
+        <span *ngIf="notif.details?.httpStatus" [ngClass]="getStatusBadgeClass(notif.details?.httpStatus)" class="ms-2">
+          HTTP {{ notif.details?.httpStatus }}
+        </span>
+      </div>
+      <div class="btn-group ms-2">
+        <button
+          *ngIf="notif.details"
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="toggleDetails(notif.id)"
+          title="Ver detalles de error"
+        >
+          📋
+        </button>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="close(notif.id)"
+          aria-label="Close"
+        ></button>
+      </div>
+    </div>
+
+    <div *ngIf="notif.showDetails && notif.details" class="alert-details mt-3 pt-3 border-top">
+      <div class="details-grid">
+        <div *ngIf="notif.details.httpStatus" class="detail-item">
+          <strong>Código HTTP:</strong>
+          <code>{{ notif.details.httpStatus }}</code>
+        </div>
+
+        <div *ngIf="notif.details.endpoint" class="detail-item">
+          <strong>Endpoint:</strong>
+          <code>{{ notif.details.endpoint }}</code>
+        </div>
+
+        <div *ngIf="notif.details.backendMessage" class="detail-item">
+          <strong>Mensaje del Backend:</strong>
+          <code>{{ notif.details.backendMessage }}</code>
+        </div>
+
+        <div *ngIf="notif.details.backendCode" class="detail-item">
+          <strong>Código del Error:</strong>
+          <code>{{ notif.details.backendCode }}</code>
+        </div>
+
+        <div *ngIf="notif.details.clientError" class="detail-item">
+          <strong>Error en Cliente:</strong>
+          <pre class="text-danger">{{ notif.details.clientError }}</pre>
+        </div>
+
+        <div *ngIf="notif.details.timestamp" class="detail-item">
+          <strong>Tiempo:</strong>
+          <code>{{ notif.details.timestamp }}</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
