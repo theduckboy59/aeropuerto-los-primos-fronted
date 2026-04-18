@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  usersApiUrl: 'https://aeropuerto-los-primos-backend.onrender.com/api/users'
+  usersApiUrl: 'http://13.222.194.37:8080/api/users'
 };
