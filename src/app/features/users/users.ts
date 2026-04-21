@@ -5,6 +5,7 @@ import { User } from "../../models/user";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
+import { CatalogItem } from "../../core/api.service";
 
 @Component({
   selector: "app-users",
@@ -18,7 +19,14 @@ export class Users implements OnInit {
   showForm = false;
   editMode = false;
   editingUserId: number | null = null;
-  newUser: User = { username: "", email: "", password: "", active: true };
+  statuses: CatalogItem[] = [];
+  activeStatusId?: number;
+  newUser: User = {
+    username: "",
+    email: "",
+    password: "",
+    estadoId: undefined
+  };
 
   constructor(
     private api: ApiService,
@@ -26,7 +34,30 @@ export class Users implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadStatuses();
     this.loadUsers();
+  }
+
+  loadStatuses(): void {
+    this.api.getStatusCatalog().subscribe({
+      next: (statuses) => {
+        this.statuses = statuses;
+        this.activeStatusId = statuses.find((status) => status.code?.toUpperCase() === "ACTIVO")?.id;
+
+        if (!this.editMode && !this.newUser.estadoId) {
+          this.newUser.estadoId = this.activeStatusId;
+        }
+      },
+      error: (err: any) => {
+        this.notification.error("No se pudieron cargar los estados de usuario.", 0, {
+          httpStatus: err?.status,
+          backendMessage: err?.error?.mensaje || err?.error?.message || "Verifique el endpoint /api/catalogs/status.",
+          endpoint: "/api/catalogs/status",
+          timestamp: new Date().toLocaleString("es-ES"),
+          clientError: err?.message
+        });
+      }
+    });
   }
 
   loadUsers(): void {
@@ -122,7 +153,7 @@ export class Users implements OnInit {
       username: u.username,
       email: u.email,
       password: "",
-      active: u.active
+      estadoId: u.estadoId ?? u.estado?.id ?? this.activeStatusId
     };
     this.showForm = true;
   }
@@ -156,9 +187,12 @@ export class Users implements OnInit {
 
     const payload: User = {
       username: this.newUser.username.trim(),
-      email: this.newUser.email.trim(),
-      active: this.newUser.active
+      email: this.newUser.email.trim()
     };
+
+    if (this.newUser.estadoId) {
+      payload.estadoId = this.newUser.estadoId;
+    }
 
     if (password.length > 0) {
       payload.password = password;
@@ -232,6 +266,24 @@ export class Users implements OnInit {
   }
 
   private resetNewUser(): void {
-    this.newUser = { username: "", email: "", password: "", active: true };
+    this.newUser = {
+      username: "",
+      email: "",
+      password: "",
+      estadoId: this.activeStatusId
+    };
+  }
+
+  getStatusLabel(user: User): string {
+    return user.estado?.label || user.estado?.name || user.estado?.code || (this.isUserActive(user) ? "Activo" : "Inactivo");
+  }
+
+  isUserActive(user: User): boolean {
+    if (typeof user.active === "boolean") {
+      return user.active;
+    }
+
+    const code = user.estado?.code?.toUpperCase();
+    return code === "ACTIVO" || (!!this.activeStatusId && user.estadoId === this.activeStatusId);
   }
 }

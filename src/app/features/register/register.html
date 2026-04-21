@@ -1,7 +1,132 @@
 <section class="register-page">
-  <div class="register-card">
-    <h1>Ventana de registro</h1>
-    <p>Esta pantalla esta reservada para el registro de usuarios.</p>
-    <a routerLink="/" class="btn btn-outline-primary">Volver al portal</a>
-  </div>
+  <header class="register-header-bar">
+    <nav class="register-nav">
+      <a routerLink="/" class="register-link">Portal</a>
+      <a routerLink="/login" class="register-link">Iniciar sesion</a>
+    </nav>
+  </header>
+
+  <main class="register-main">
+    <div class="register-card">
+      <p class="register-code">ALP</p>
+      <h1>Registro de pasajeros</h1>
+      <p class="register-text">
+        El formulario ahora intenta cargar tipos de documento y nacionalidades desde el backend.
+        El estado no se elige aqui: el registro debe quedar activo por defecto y solo administracion
+        deberia cambiarlo despues.
+      </p>
+
+      <div class="alert alert-info" *ngIf="isLoadingCatalogs">
+        Cargando catalogos desde backend...
+      </div>
+
+      <div class="alert alert-danger" *ngIf="catalogLoadError">
+        {{ catalogLoadError }}
+      </div>
+
+      <div
+        *ngIf="inlineMessage"
+        class="alert"
+        [class.alert-success]="inlineMessageType === 'success'"
+        [class.alert-danger]="inlineMessageType === 'error'"
+        [class.alert-warning]="inlineMessageType === 'warning'"
+      >
+        {{ inlineMessage }}
+      </div>
+
+      <form #registerNgForm="ngForm" (ngSubmit)="register()" class="register-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" class="form-control" [(ngModel)]="registerForm.username" required>
+          </div>
+
+          <div class="field">
+            <label for="email">Correo electronico</label>
+            <input id="email" name="email" type="email" class="form-control" [(ngModel)]="registerForm.email" required>
+          </div>
+
+          <div class="field field-password">
+            <label for="password">Contrasena</label>
+            <input
+              id="password"
+              name="password"
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              [(ngModel)]="registerForm.password"
+              minlength="8"
+              required
+            >
+            <label class="password-toggle">
+              <input type="checkbox" [(ngModel)]="showPassword" name="showPassword">
+              Ver contrasena
+            </label>
+          </div>
+
+          <div class="field">
+            <label for="nombreCompleto">Nombre completo</label>
+            <input id="nombreCompleto" name="nombreCompleto" type="text" class="form-control" [(ngModel)]="registerForm.nombreCompleto" required>
+          </div>
+
+          <div class="field">
+            <label for="tipoDocumentoId">Tipo de documento</label>
+            <select id="tipoDocumentoId" name="tipoDocumentoId" class="form-select" [(ngModel)]="registerForm.tipoDocumentoId" required>
+              <option [ngValue]="0" disabled>Selecciona un tipo de documento</option>
+              <option *ngFor="let option of documentTypes; trackBy: trackByCatalogId" [ngValue]="option.id">
+                {{ option.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="numeroDocumento">Numero de documento</label>
+            <input id="numeroDocumento" name="numeroDocumento" type="text" class="form-control" [(ngModel)]="registerForm.numeroDocumento" required>
+          </div>
+
+          <div class="field">
+            <label for="fechaNacimiento">Fecha de nacimiento</label>
+            <input id="fechaNacimiento" name="fechaNacimiento" type="date" class="form-control" [(ngModel)]="registerForm.fechaNacimiento" required>
+          </div>
+
+          <div class="field">
+            <label for="nacionalidadId">Nacionalidad</label>
+            <select id="nacionalidadId" name="nacionalidadId" class="form-select" [(ngModel)]="registerForm.nacionalidadId" (ngModelChange)="onNationalityChange()" required>
+              <option [ngValue]="0" disabled>Selecciona una nacionalidad</option>
+              <option *ngFor="let option of nationalities; trackBy: trackByCatalogId" [ngValue]="option.id">
+                {{ option.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="codigoArea">Codigo de area</label>
+            <input id="codigoArea" name="codigoArea" type="text" class="form-control" [(ngModel)]="registerForm.codigoArea" placeholder="Se completa desde la nacionalidad o puedes escribirlo">
+          </div>
+
+          <div class="field">
+            <label for="telefono">Telefono</label>
+            <input id="telefono" name="telefono" type="text" class="form-control" [(ngModel)]="registerForm.telefono" required>
+          </div>
+
+          <div class="field">
+            <label for="telefonoEmergencia">Telefono de emergencia</label>
+            <input id="telefonoEmergencia" name="telefonoEmergencia" type="text" class="form-control" [(ngModel)]="registerForm.telefonoEmergencia">
+          </div>
+
+          <div class="field field-full">
+            <label for="direccion">Direccion</label>
+            <textarea id="direccion" name="direccion" rows="3" class="form-control" [(ngModel)]="registerForm.direccion" required></textarea>
+          </div>
+        </div>
+
+        <div class="register-actions">
+          <button type="submit" class="register-button primary" [disabled]="isSubmitting || isLoadingCatalogs || !hasCatalogData()">
+            Crear cuenta
+          </button>
+          <a routerLink="/login" class="register-button">Ir a login</a>
+          <a routerLink="/" class="register-button">Volver al portal</a>
+        </div>
+      </form>
+    </div>
+  </main>
 </section>

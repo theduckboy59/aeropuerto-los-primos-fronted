@@ -1,3 +1,10 @@
+export interface UserStatus {
+  id: number;
+  code?: string;
+  name?: string;
+  label?: string;
+}
+
 export interface User {
   id?: number;
   username: string;
@@ -5,5 +12,7 @@ export interface User {
   password?: string;
   createdAt?: string;
   updatedAt?: string;
-  active: boolean;
+  estadoId?: number;
+  estado?: UserStatus;
+  active?: boolean;
 }
